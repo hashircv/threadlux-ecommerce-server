@@ -52,3 +52,16 @@ export async function loginUser({ email, password }) {
 
   return { user: publicUser(user), token: buildToken(user) };
 }
+
+export async function getUserById(id) {
+  const result = await query(
+    "SELECT id, name, email, role, created_at FROM users WHERE id = $1",
+    [id]
+  );
+
+  if (!result.rows[0]) {
+    throw new AppError("User account not found", 404);
+  }
+
+  return publicUser(result.rows[0]);
+}
